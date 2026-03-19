@@ -1,35 +1,40 @@
 "use client";
 
-import { HTMLAttributes, useState } from "react";
+import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
-interface LogoutButtonProps {
+type Props = {
   title: string;
-  className?: HTMLAttributes<HTMLSpanElement>["className"];
-}
+  icon?: React.ElementType;
+  className?: string;
+};
 
-export default function LogoutButton({ title, className }: LogoutButtonProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function LogoutButton({ title, icon: Icon, className }: Props) {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogout = () => {
-    setIsLoading(true);
-    return signOut({
+  const handleLogout = async () => {
+    if (loading) return;
+
+    setLoading(true);
+
+    await signOut({
       fetchOptions: {
         onSuccess: () => {
-          setIsLoading(false);
           router.replace("/sign-in");
         },
       },
     });
+
+    setLoading(false);
   };
 
   return (
-    <Button disabled={isLoading} className={cn(className, "cursor-pointer")} onClick={handleLogout}>
-      {title}
+    <Button onClick={handleLogout} disabled={loading} className={className} variant="ghost">
+      {Icon && <Icon className="mr-2 h-4 w-4" />}
+      {loading ? "Signing out..." : title}
     </Button>
   );
 }
