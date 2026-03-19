@@ -1,9 +1,9 @@
-import React from "react";
+import { requireAuthentication } from "@/_module/auth/services/auth-check";
+import { redirect } from "next/navigation";
 
 export default async function HomePage() {
-  return (
-    <div>
-      <h3>Code Review Application</h3>
-    </div>
-  );
+  await requireAuthentication();
+
+  // authenticated user will be automatically redirected to the dashboard
+  return redirect("/dashboard");
 }
