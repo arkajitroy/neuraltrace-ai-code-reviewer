@@ -1,4 +1,3 @@
-// src/lib/db.ts
 import "dotenv/config";
 
 import { PrismaPg } from "@prisma/adapter-pg";
