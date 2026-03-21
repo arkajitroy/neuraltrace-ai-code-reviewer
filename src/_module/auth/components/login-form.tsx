@@ -14,7 +14,7 @@ export default function LoginForm() {
         provider: "github",
       });
     } catch (error) {
-      console.log("Login error", error);
+      console.error("Login error", error);
       setIsLoading(false);
     }
   };
