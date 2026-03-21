@@ -1,12 +1,5 @@
-import LogoutButton from "@/_module/auth/components/logout-button";
-import { ThemeToggle } from "@/components/custom/theme-toggle";
+import MainDashboardPage from "@/_module/dashboard/pages/dashboard";
 
 export default function DashboardPage() {
-  return (
-    <div>
-      <h1>Dashboard Page</h1>
-      <LogoutButton title="Logout" />
-      <ThemeToggle />
-    </div>
-  );
+  return <MainDashboardPage />;
 }
