@@ -4,7 +4,7 @@ import { getUserContribution } from "@/_module/repository/lib/github";
 import { DEFAULT_MONTH_LIST, DEFAULT_REPOSITORY_COUNT, DEFAULT_REVIEW_COUNT } from "../constants/repository";
 import { getGithubContext } from "@/_module/repository/utils";
 
-export async function getDashboardStats() {
+export async function getDashboardStatistics() {
   try {
     const { octokit, user } = await getGithubContext();
 
