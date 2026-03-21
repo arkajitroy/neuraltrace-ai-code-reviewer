@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Merriweather, JetBrains_Mono } from "next/font/google";
-
-import "./global.css";
 import RootProvider from "@/components/providers";
+
+import "@/styles/globals.css";
 
 const fontSans = Inter({
   subsets: ["latin"],
