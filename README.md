@@ -29,3 +29,16 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Github Actions and there workings
+
+1. Authentication check
+2. Fetch github username
+3. Fetch github commits
+   - Gets your contribution calendar
+   - counts how many commits you have made each month
+4. Fetch Code Reviews
+   - Grouping by 6 months
+5. Fetch PR
+   - All PRS in last 6 months
+   - Counts how many PRs has been raised each months
