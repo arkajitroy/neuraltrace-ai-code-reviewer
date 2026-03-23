@@ -2,11 +2,43 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
-import { getDashboardStatistics, getMonthlyActivity } from "../server/actions";
+import {
+  getDashboardStatistics,
+  getMonthlyActivity,
+  getRecentRepositories,
+  getContributionInsights,
+} from "../server/actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GitBranch, GitCommit, GitPullRequest, Loader2, MessageSquare } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import ContributionGraph from "../components/graph/contribution-graph";
+import {
+  GitBranch,
+  GitCommit,
+  GitPullRequest,
+  Loader2,
+  MessageSquare,
+  FolderGit2,
+  Star,
+  Clock,
+  ExternalLink,
+  Code2,
+  Flame,
+  Trophy,
+  Zap,
+  CalendarDays,
+} from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import ContributionGraph from "../components/visualizations/contribution-graph";
+import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
+import ContributionStreak from "../components/visualizations/contribution-streak";
 
 export default function MainDashboardPage() {
   const { data: statistics, isLoading: isLoadingStatistics } = useQuery({
@@ -14,9 +46,19 @@ export default function MainDashboardPage() {
     queryFn: async () => await getDashboardStatistics(),
   });
 
+  const { data: insights, isLoading: isLoadingInsights } = useQuery({
+    queryKey: ["contribution-insights"],
+    queryFn: async () => await getContributionInsights(),
+  });
+
   const { data: monthlyActivity, isLoading: isLoadingMonthlyActivity } = useQuery({
     queryKey: ["monthly-activity"],
     queryFn: async () => await getMonthlyActivity(),
+  });
+
+  const { data: recentRepos, isLoading: isLoadingRecentRepos } = useQuery({
+    queryKey: ["recent-repositories"],
+    queryFn: async () => await getRecentRepositories(),
   });
 
   return (
@@ -34,7 +76,11 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalRepos || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalRepos || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">Connected Repos</p>
           </CardContent>
@@ -47,7 +93,11 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalCommits || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalCommits || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">In the last year</p>
           </CardContent>
@@ -60,7 +110,11 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalPRs || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalPRs || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">All time</p>
           </CardContent>
@@ -73,28 +127,101 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalReviews || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalReviews || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">Generated reviews</p>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Contribution Activity</CardTitle>
-          <CardDescription>Visualising your coding frequency over the last year</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ContributionGraph />
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-7">
+        <Card className="col-span-1 lg:col-span-5 flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold">Contribution Activity</CardTitle>
+            <CardDescription className="text-xs">
+              Visualising your coding frequency over the last year
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-5 pt-0 flex-1 flex flex-col">
+            <ContributionGraph />
+
+            <ContributionStreak isLoadingInsights={isLoadingInsights} insights={insights!} />
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-1 lg:col-span-2 flex flex-col">
+          <CardHeader className="px-5 py-5 border-b">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <FolderGit2 className="h-4 w-4 text-primary" />
+              Recent Repositories
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 flex flex-col flex-1">
+            {isLoadingRecentRepos ? (
+              <div className="flex flex-1 items-center justify-center min-h-[200px]">
+                <Spinner />
+              </div>
+            ) : recentRepos?.length ? (
+              <div className="flex flex-col flex-1 divide-y">
+                {recentRepos.map((repo) => (
+                  <Link
+                    key={repo.id}
+                    href={repo.html_url}
+                    target="_blank"
+                    className="group flex flex-col justify-center flex-1 gap-2 px-6 py-4 hover:bg-muted/40 transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-semibold text-sm truncate group-hover:text-primary transition-colors flex-1">
+                        {repo.name}
+                      </span>
+                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    {repo.description && (
+                      <p className="text-xs text-muted-foreground line-clamp-1">
+                        {repo.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                      {repo.language && (
+                        <div className="flex items-center gap-1.5 font-medium text-foreground/80">
+                          <Code2 className="h-3.5 w-3.5 text-primary/70" />
+                          <span>{repo.language}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1.5">
+                        <Star className="h-3.5 w-3.5 text-yellow-500" />
+                        <span>{repo.stargazers_count}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0 ml-auto opacity-80">
+                        <Clock className="h-3.5 w-3.5" />
+                        <span>
+                          {formatDistanceToNow(new Date(repo.updated_at!), { addSuffix: true })}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-1 items-center justify-center text-xs text-muted-foreground min-h-[200px]">
+                No recent repositories.
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-4">
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Activity Overview</CardTitle>
-            <CardDescription>Monthly breakdown of commits, PRs, and reviews (last 6 months)</CardDescription>
+            <CardDescription>
+              Monthly breakdown of commits, PRs, and reviews (last 6 months)
+            </CardDescription>
           </CardHeader>
 
           <CardContent>

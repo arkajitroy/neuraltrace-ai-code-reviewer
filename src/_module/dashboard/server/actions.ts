@@ -123,3 +123,83 @@ export async function getContributionStats() {
     return null;
   }
 }
+
+export async function getRecentRepositories() {
+  try {
+    const { octokit, user } = await getGithubContext();
+
+    const { data: repos } = await octokit.rest.repos.listForAuthenticatedUser({
+      sort: "updated",
+      per_page: 4,
+      direction: "desc",
+    });
+
+    return repos.map((repo) => ({
+      id: repo.id,
+      name: repo.name,
+      description: repo.description,
+      language: repo.language,
+      stargazers_count: repo.stargazers_count,
+      updated_at: repo.updated_at,
+      pushed_at: repo.pushed_at,
+      html_url: repo.html_url,
+      visibility: repo.visibility,
+    }));
+  } catch (error) {
+    console.error("getRecentRepositories failed:", error);
+    return [];
+  }
+}
+
+export async function getContributionInsights() {
+  try {
+    const { user } = await getGithubContext();
+    const calendar = await getUserContribution(user.login);
+
+    const days = calendar.weeks.flatMap((w) => w.contributionDays);
+    
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let maxContributionsInADay = 0;
+    const weekdayCounts = new Array(7).fill(0);
+    
+    let tempStreak = 0;
+
+    for (const day of days) {
+      if (day.contributionCount > 0) {
+        tempStreak++;
+        longestStreak = Math.max(longestStreak, tempStreak);
+        maxContributionsInADay = Math.max(maxContributionsInADay, day.contributionCount);
+        
+        const date = new Date(day.date);
+        weekdayCounts[date.getDay()] += day.contributionCount;
+      } else {
+        tempStreak = 0;
+      }
+    }
+    
+    let current = 0;
+    for (let i = days.length - 1; i >= 0; i--) {
+        if (days[i].contributionCount > 0) {
+            current++;
+        } else if (i !== days.length - 1) { 
+            break;
+        }
+    }
+    currentStreak = current;
+
+    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const maxDayIndex = weekdayCounts.indexOf(Math.max(...weekdayCounts));
+    const mostActiveDay = Math.max(...weekdayCounts) > 0 ? weekdays[maxDayIndex] : "None";
+
+    return {
+      longestStreak,
+      currentStreak,
+      maxContributionsInADay,
+      mostActiveDay,
+    };
+  } catch (error) {
+    console.error("getContributionInsights failed:", error);
+    return { longestStreak: 0, currentStreak: 0, maxContributionsInADay: 0, mostActiveDay: "None" };
+  }
+}

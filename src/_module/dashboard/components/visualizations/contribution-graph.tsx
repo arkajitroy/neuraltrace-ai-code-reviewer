@@ -63,11 +63,11 @@ export default function ContributionGraph() {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Contribution Activity</CardTitle>
+        {/* <CardTitle className="text-base">Activity Chart</CardTitle> */}
 
         <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">{data.totalContributions}</span> contributions in the last
-          year
+          <span className="font-semibold text-foreground">{data.totalContributions}</span>{" "}
+          contributions in the last year
         </p>
       </CardHeader>
 
