@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { type NavCollapsible, type NavItem, type NavLink, type NavGroup as NavGroupProps } from "../types";
+import { type NavCollapsible, type NavItem, type NavLink, type NavGroup as NavGroupProps } from "../../types";
 
 function isCollapsible(item: NavItem): item is NavCollapsible {
   return "items" in item;

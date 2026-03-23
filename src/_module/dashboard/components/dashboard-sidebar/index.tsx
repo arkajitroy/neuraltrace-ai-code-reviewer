@@ -1,7 +1,7 @@
 "use client";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
-import { sidebarData } from "../constants/sidebar-data";
+import { sidebarData } from "../../constants/sidebar-data";
 import { NavGroup } from "./navigation-group";
 import NavUser from "./navigation-user";
 import TeamSwitcher from "./team-switcher";
