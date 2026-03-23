@@ -6,6 +6,7 @@ import { getDashboardStatistics, getMonthlyActivity } from "../server/actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GitBranch, GitCommit, GitPullRequest, Loader2, MessageSquare } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import ContributionGraph from "../components/graph/contribution-graph";
 
 export default function MainDashboardPage() {
   const { data: statistics, isLoading: isLoadingStatistics } = useQuery({
@@ -84,9 +85,9 @@ export default function MainDashboardPage() {
           <CardTitle>Contribution Activity</CardTitle>
           <CardDescription>Visualising your coding frequency over the last year</CardDescription>
         </CardHeader>
-        {/* <CardContent>
+        <CardContent>
           <ContributionGraph />
-        </CardContent> */}
+        </CardContent>
       </Card>
 
       <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-4">
