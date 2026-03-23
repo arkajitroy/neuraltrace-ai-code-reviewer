@@ -126,7 +126,7 @@ export async function getContributionStats() {
 
 export async function getRecentRepositories() {
   try {
-    const { octokit, user } = await getGithubContext();
+    const { octokit } = await getGithubContext();
 
     const { data: repos } = await octokit.rest.repos.listForAuthenticatedUser({
       sort: "updated",
@@ -157,12 +157,12 @@ export async function getContributionInsights() {
     const calendar = await getUserContribution(user.login);
 
     const days = calendar.weeks.flatMap((w) => w.contributionDays);
-    
+
     let currentStreak = 0;
     let longestStreak = 0;
     let maxContributionsInADay = 0;
     const weekdayCounts = new Array(7).fill(0);
-    
+
     let tempStreak = 0;
 
     for (const day of days) {
@@ -170,21 +170,21 @@ export async function getContributionInsights() {
         tempStreak++;
         longestStreak = Math.max(longestStreak, tempStreak);
         maxContributionsInADay = Math.max(maxContributionsInADay, day.contributionCount);
-        
+
         const date = new Date(day.date);
         weekdayCounts[date.getDay()] += day.contributionCount;
       } else {
         tempStreak = 0;
       }
     }
-    
+
     let current = 0;
     for (let i = days.length - 1; i >= 0; i--) {
-        if (days[i].contributionCount > 0) {
-            current++;
-        } else if (i !== days.length - 1) { 
-            break;
-        }
+      if (days[i].contributionCount > 0) {
+        current++;
+      } else if (i !== days.length - 1) {
+        break;
+      }
     }
     currentStreak = current;
 

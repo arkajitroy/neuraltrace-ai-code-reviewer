@@ -51,3 +51,18 @@ export async function getUserContribution(username: string): Promise<Contributio
     throw new Error("Failed to fetch GitHub contributions");
   }
 }
+
+export async function getRepositories(page = 1, perPage = 10) {
+  const token = await getGithubToken();
+  const octokit = new Octokit({ auth: token });
+
+  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
+    sort: "updated",
+    direction: "desc",
+    visibility: "all",
+    per_page: perPage,
+    page: page,
+  });
+
+  return data;
+}
