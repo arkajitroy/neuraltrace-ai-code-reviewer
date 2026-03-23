@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:push": "prisma db push",
     "db:server-dev": "prisma dev",
     "db:studio": "prisma studio",
     "db:migrate": "prisma migrate dev",
