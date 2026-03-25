@@ -16,10 +16,42 @@ export const getAllRepositories = async (page: number = 1, perPage: number = 10)
     },
   });
 
-  const connectedRepoIds = new Set(dbRepositories.map((repo) => repo.githubId));
+  const connectedRepositoriesIds = new Set(dbRepositories.map((repo) => repo.githubId));
 
-  return githubRepos.map((repo: any) => ({
+  return githubRepos.map((repo) => ({
     ...repo,
-    isConnected: connectedRepoIds.has(BigInt(repo.id)),
+    isConnected: connectedRepositoriesIds.has(BigInt(repo.id)),
   }));
 };
+
+// export const connectRepository = async (owner: string, repo: string, githubId: string) => {
+//   const session = await auth.api.getSession({
+//     headers: await headers(),
+//   });
+
+//   if (!session) {
+//     throw new Error("Unauthorised");
+//   }
+
+//   //* TODO: CHECK IF USER CAN CONNECT MORE REPO
+//   const webhook = await createWebhook(owner, repo);
+
+//   if (webhook) {
+//     await prisma.repository.create({
+//       data: {
+//         githubId: BigInt(githubId),
+//         name: repo,
+//         owner,
+//         fullName: `${owner}/${repo}`,
+//         url: `https://github.com/${owner}/${repo}`,
+//         userId: session.user.id,
+//       },
+//     });
+//   }
+
+//   //* INCREMENT REPOSITORY COUND FOR USAGE TRACKING
+
+//   //* TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGET)
+
+//   return webhook;
+// };
