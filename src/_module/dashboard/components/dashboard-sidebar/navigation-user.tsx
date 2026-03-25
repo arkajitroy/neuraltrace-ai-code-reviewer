@@ -96,8 +96,8 @@ export default function NavUser({ user }: NavUserProps) {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                variant="destructive" 
+              <DropdownMenuItem
+                variant="destructive"
                 onClick={async () => {
                   try {
                     await signOut();

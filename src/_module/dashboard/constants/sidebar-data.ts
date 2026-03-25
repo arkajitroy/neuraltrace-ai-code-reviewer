@@ -19,7 +19,7 @@ export const sidebarData: SidebarData = {
   user: {
     name: "Arkajit Roy",
     email: "admin@neuraltrace.ai",
-    avatar: "/avatars/avatar.jpg",
+    avatar: "/avatar.jpg",
   },
   teams: [
     {

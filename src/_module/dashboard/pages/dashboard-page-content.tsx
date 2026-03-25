@@ -28,7 +28,7 @@ import Link from "next/link";
 import ContributionStreak from "../components/visualizations/contribution-streak";
 import { UrlObject } from "url";
 
-export default function DashboardPage() {
+export default function DashboardPageContent() {
   const { data: statistics, isLoading: isLoadingStatistics } = useQuery({
     queryKey: ["dashboard-statistics"],
     queryFn: async () => await getDashboardStatistics(),
