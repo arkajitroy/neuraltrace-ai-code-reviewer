@@ -85,24 +85,8 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: "Settings",
+          href: "/settings",
           icon: Settings,
-          items: [
-            {
-              title: "Profile",
-              href: "/settings/profile",
-              icon: UserCog,
-            },
-            {
-              title: "Appearance",
-              href: "/settings/appearance",
-              icon: Palette,
-            },
-            {
-              title: "Notifications",
-              href: "/settings/notifications",
-              icon: Bell,
-            },
-          ],
         },
         {
           title: "Support",
