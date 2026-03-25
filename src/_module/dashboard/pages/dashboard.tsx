@@ -20,27 +20,15 @@ import {
   Clock,
   ExternalLink,
   Code2,
-  Flame,
-  Trophy,
-  Zap,
-  CalendarDays,
 } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import ContributionGraph from "../components/visualizations/contribution-graph";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import ContributionStreak from "../components/visualizations/contribution-streak";
+import { UrlObject } from "url";
 
-export default function MainDashboardPage() {
+export default function DashboardPage() {
   const { data: statistics, isLoading: isLoadingStatistics } = useQuery({
     queryKey: ["dashboard-statistics"],
     queryFn: async () => await getDashboardStatistics(),
@@ -76,11 +64,7 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalRepos || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalRepos || 0}
             </div>
             <p className="text-muted-foreground text-xs">Connected Repos</p>
           </CardContent>
@@ -93,11 +77,7 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalCommits || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalCommits || 0}
             </div>
             <p className="text-muted-foreground text-xs">In the last year</p>
           </CardContent>
@@ -110,11 +90,7 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalPRs || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalPRs || 0}
             </div>
             <p className="text-muted-foreground text-xs">All time</p>
           </CardContent>
@@ -127,11 +103,7 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalReviews || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalReviews || 0}
             </div>
             <p className="text-muted-foreground text-xs">Generated reviews</p>
           </CardContent>
@@ -142,9 +114,7 @@ export default function MainDashboardPage() {
         <Card className="col-span-1 lg:col-span-5 flex flex-col">
           <CardHeader>
             <CardTitle className="text-base font-semibold">Contribution Activity</CardTitle>
-            <CardDescription className="text-xs">
-              Visualising your coding frequency over the last year
-            </CardDescription>
+            <CardDescription className="text-xs">Visualising your coding frequency over the last year</CardDescription>
           </CardHeader>
           <CardContent className="p-5 pt-0 flex-1 flex flex-col">
             <ContributionGraph />
@@ -162,7 +132,7 @@ export default function MainDashboardPage() {
           </CardHeader>
           <CardContent className="p-0 flex flex-col flex-1">
             {isLoadingRecentRepos ? (
-              <div className="flex flex-1 items-center justify-center min-h-[200px]">
+              <div className="flex flex-1 items-center justify-center min-h-50">
                 <Spinner />
               </div>
             ) : recentRepos?.length ? (
@@ -170,7 +140,7 @@ export default function MainDashboardPage() {
                 {recentRepos.map((repo) => (
                   <Link
                     key={repo.id}
-                    href={repo.html_url}
+                    href={repo.html_url as unknown as UrlObject}
                     target="_blank"
                     className="group flex flex-col justify-center flex-1 gap-2 px-6 py-4 hover:bg-muted/40 transition-colors"
                   >
@@ -181,9 +151,7 @@ export default function MainDashboardPage() {
                       <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     {repo.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
-                        {repo.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{repo.description}</p>
                     )}
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
                       {repo.language && (
@@ -198,16 +166,14 @@ export default function MainDashboardPage() {
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0 ml-auto opacity-80">
                         <Clock className="h-3.5 w-3.5" />
-                        <span>
-                          {formatDistanceToNow(new Date(repo.updated_at!), { addSuffix: true })}
-                        </span>
+                        <span>{formatDistanceToNow(new Date(repo.updated_at!), { addSuffix: true })}</span>
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-1 items-center justify-center text-xs text-muted-foreground min-h-[200px]">
+              <div className="flex flex-1 items-center justify-center text-xs text-muted-foreground min-h-50">
                 No recent repositories.
               </div>
             )}
@@ -219,9 +185,7 @@ export default function MainDashboardPage() {
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Activity Overview</CardTitle>
-            <CardDescription>
-              Monthly breakdown of commits, PRs, and reviews (last 6 months)
-            </CardDescription>
+            <CardDescription>Monthly breakdown of commits, PRs, and reviews (last 6 months)</CardDescription>
           </CardHeader>
 
           <CardContent>

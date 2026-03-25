@@ -6,7 +6,6 @@ import {
   Palette,
   LayoutDashboard,
   GitPullRequest,
-  GitCommit,
   Bot,
   Box,
   LifeBuoy,

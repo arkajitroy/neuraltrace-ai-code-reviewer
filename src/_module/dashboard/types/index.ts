@@ -16,10 +16,6 @@ type BaseNavItem = {
   icon?: React.ElementType;
 };
 
-/**
- * Next.js uses `href` instead of `to`
- * Keep it flexible but clean
- */
 type Href = string;
 
 type NavLink = BaseNavItem & {
