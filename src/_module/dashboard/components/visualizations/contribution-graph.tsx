@@ -4,7 +4,7 @@ import { ActivityCalendar } from "react-activity-calendar";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import { getContributionStats } from "../../server/actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 export default function ContributionGraph() {
   const { resolvedTheme } = useTheme();
@@ -17,75 +17,57 @@ export default function ContributionGraph() {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Contribution Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-40 items-center justify-center">
-            <p className="text-sm text-muted-foreground animate-pulse">Loading contributions...</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-1 min-h-[160px] items-center justify-center rounded-xl border border-dashed border-border/60 bg-muted/10 my-2">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-6 w-6 animate-spin text-primary/60" />
+          <p className="text-sm font-medium">Loading contribution graph...</p>
+        </div>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Contribution Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-40 items-center justify-center">
-            <p className="text-sm text-destructive">Failed to load contribution data</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-1 min-h-[160px] items-center justify-center rounded-xl border border-dashed border-destructive/40 bg-destructive/5 my-2">
+        <p className="text-sm text-destructive font-medium flex items-center gap-2">
+          Failed to load contribution data
+        </p>
+      </div>
     );
   }
 
   if (!data || !data.contributions?.length) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Contribution Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-40 items-center justify-center">
-            <p className="text-sm text-muted-foreground">No contribution data available</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-1 min-h-[160px] items-center justify-center rounded-xl border border-dashed border-border/60 bg-muted/10 my-2">
+        <p className="text-sm text-muted-foreground">No contribution data available</p>
+      </div>
     );
   }
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-2">
-        {/* <CardTitle className="text-base">Activity Chart</CardTitle> */}
-
+    <div className="flex flex-col w-full">
+      <div className="mb-4 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">{data.totalContributions}</span>{" "}
+          <span className="text-lg font-bold text-foreground">
+            {data.totalContributions}
+          </span>{" "}
           contributions in the last year
         </p>
-      </CardHeader>
+      </div>
 
-      <CardContent>
-        <div className="w-full overflow-x-auto">
-          <div className="min-w-full px-2">
-            <ActivityCalendar
-              data={data.contributions}
-              colorScheme={resolvedTheme === "dark" ? "dark" : "light"}
-              blockMargin={3}
-              blockSize={12}
-              fontSize={12}
-              showMonthLabels
-              showWeekdayLabels={false}
-            />
-          </div>
+      <div className="w-full overflow-x-auto pb-2">
+        <div className="min-w-max px-1">
+          <ActivityCalendar
+            data={data.contributions}
+            colorScheme={resolvedTheme === "dark" ? "dark" : "light"}
+            blockMargin={4}
+            blockSize={14}
+            fontSize={12}
+            showMonthLabels
+            showWeekdayLabels={false}
+          />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

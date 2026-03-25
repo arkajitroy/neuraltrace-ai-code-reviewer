@@ -21,7 +21,16 @@ import {
   ExternalLink,
   Code2,
 } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import ContributionGraph from "../components/visualizations/contribution-graph";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
@@ -64,7 +73,11 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalRepos || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalRepos || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">Connected Repos</p>
           </CardContent>
@@ -77,7 +90,11 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalCommits || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalCommits || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">In the last year</p>
           </CardContent>
@@ -90,7 +107,11 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalPRs || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalPRs || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">All time</p>
           </CardContent>
@@ -103,7 +124,11 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalReviews || 0}
+              {isLoadingStatistics ? (
+                <Loader2 className="h-8 w-8 animate-spin" />
+              ) : (
+                statistics?.totalReviews || 0
+              )}
             </div>
             <p className="text-muted-foreground text-xs">Generated reviews</p>
           </CardContent>
@@ -111,69 +136,87 @@ export default function DashboardPageContent() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-7">
-        <Card className="col-span-1 lg:col-span-5 flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold">Contribution Activity</CardTitle>
-            <CardDescription className="text-xs">Visualising your coding frequency over the last year</CardDescription>
+        <Card className="col-span-1 lg:col-span-5 flex flex-col h-full overflow-hidden shadow-sm">
+          <CardHeader className="px-6 py-5 border-b shrink-0 bg-muted/10">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Code2 className="h-4 w-4 text-primary" />
+              Contribution Activity
+            </CardTitle>
+            <CardDescription className="text-xs">
+              Visualising your coding frequency and streak statistics over the last year
+            </CardDescription>
           </CardHeader>
-          <CardContent className="p-5 pt-0 flex-1 flex flex-col">
+          <CardContent className="p-6 flex-1 flex flex-col gap-8 justify-between">
             <ContributionGraph />
-
             <ContributionStreak isLoadingInsights={isLoadingInsights} insights={insights!} />
           </CardContent>
         </Card>
 
-        <Card className="col-span-1 lg:col-span-2 flex flex-col">
-          <CardHeader className="px-5 py-5 border-b">
+        <Card className="col-span-1 lg:col-span-2 flex flex-col h-full overflow-hidden">
+          <CardHeader className="px-5 py-5 border-b shrink-0">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <FolderGit2 className="h-4 w-4 text-primary" />
               Recent Repositories
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0 flex flex-col flex-1">
+
+          <CardContent className="p-0 flex-1 overflow-hidden">
             {isLoadingRecentRepos ? (
-              <div className="flex flex-1 items-center justify-center min-h-50">
+              <div className="flex h-full items-center justify-center">
                 <Spinner />
               </div>
             ) : recentRepos?.length ? (
-              <div className="flex flex-col flex-1 divide-y">
+              <div className="flex flex-col h-full divide-y overflow-y-auto">
                 {recentRepos.map((repo) => (
                   <Link
                     key={repo.id}
                     href={repo.html_url as unknown as UrlObject}
                     target="_blank"
-                    className="group flex flex-col justify-center flex-1 gap-2 px-6 py-4 hover:bg-muted/40 transition-colors"
+                    className="group flex flex-col gap-2 px-6 py-4 hover:bg-muted/40 transition-colors"
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="font-semibold text-sm truncate group-hover:text-primary transition-colors flex-1">
+                    {/* Top Row */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="font-semibold text-sm truncate group-hover:text-primary transition-colors flex-1 min-w-0">
                         {repo.name}
                       </span>
-                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                     </div>
+
+                    {/* Description */}
                     {repo.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">{repo.description}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">
+                        {repo.description}
+                      </p>
                     )}
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+
+                    {/* Bottom Row */}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                       {repo.language && (
                         <div className="flex items-center gap-1.5 font-medium text-foreground/80">
                           <Code2 className="h-3.5 w-3.5 text-primary/70" />
                           <span>{repo.language}</span>
                         </div>
                       )}
+
                       <div className="flex items-center gap-1.5">
                         <Star className="h-3.5 w-3.5 text-yellow-500" />
                         <span>{repo.stargazers_count}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0 ml-auto opacity-80">
+
+                      <div className="flex items-center gap-1.5 opacity-80 ml-auto">
                         <Clock className="h-3.5 w-3.5" />
-                        <span>{formatDistanceToNow(new Date(repo.updated_at!), { addSuffix: true })}</span>
+                        <span className="whitespace-nowrap">
+                          {formatDistanceToNow(new Date(repo.updated_at!), {
+                            addSuffix: true,
+                          })}
+                        </span>
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-1 items-center justify-center text-xs text-muted-foreground min-h-50">
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
                 No recent repositories.
               </div>
             )}
@@ -185,7 +228,9 @@ export default function DashboardPageContent() {
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Activity Overview</CardTitle>
-            <CardDescription>Monthly breakdown of commits, PRs, and reviews (last 6 months)</CardDescription>
+            <CardDescription>
+              Monthly breakdown of commits, PRs, and reviews (last 6 months)
+            </CardDescription>
           </CardHeader>
 
           <CardContent>
