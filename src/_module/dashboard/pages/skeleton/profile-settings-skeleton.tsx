@@ -1,17 +1,25 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfileSettingsSkeleton() {
   return (
-    <Card>
+    <Card className="border-muted/60 shadow-sm">
       <CardHeader>
-        <CardTitle>Profile Settings</CardTitle>
-        <CardDescription>Update your profile information</CardDescription>
+        <CardTitle className="text-xl">Profile Settings</CardTitle>
+        <CardDescription className="text-sm">Update your profile information</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="animate-pulse space-y-4">
-          <div className="bg-muted h-10"></div>
-          <div className="bg-muted h-10"></div>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-10 w-full rounded-md" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-10 w-full rounded-md" />
+          </div>
+          <Skeleton className="h-10 w-32 rounded-md" />
         </div>
       </CardContent>
     </Card>
