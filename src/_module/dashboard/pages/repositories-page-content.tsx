@@ -8,10 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RepositoriesListSkeleton } from "./skeleton/repositories-skeleton";
+import { useConnectRepository } from "@/_module/repository/hooks/use-connect-repository";
+import { Repository } from "@/generated/prisma/client";
 
 export default function RepositoriesPageContent() {
-  // custom hooks and context
+  // custom-hook: fetching repositories
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useRepositories();
+  // custom-hook: connecting repositores
+  const { mutate: connectRepoFn } = useConnectRepository();
 
   // refs
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -29,19 +33,21 @@ export default function RepositoriesPageContent() {
       repo.full_name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  //   const handleConnect = (repo) => {
-  //     setLocalConnectingId(repo.id);
-  //     connectRepo(
-  //       {
-  //         owner: repo.full_name.split("/")[0],
-  //         repo: repo.name,
-  //         githubId: repo.id,
-  //       },
-  //       {
-  //         onSettled: () => setLocalConnectingId(null),
-  //       },
-  //     );
-  //   };
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const handleConnect = (repo) => {
+    setLocalConnectingId(repo.id);
+    connectRepoFn(
+      {
+        owner: repo.full_name.split("/")[0],
+        repo: repo.name,
+        githubId: repo.id,
+      },
+      {
+        onSettled: () => setLocalConnectingId(null),
+      },
+    );
+  };
 
   useEffect(
     function intersectionObserverFetching() {
@@ -126,7 +132,7 @@ export default function RepositoriesPageContent() {
                   <Button
                     variant={repo.isConnected ? "outline" : "default"}
                     disabled={localConnectingId === repo.id || repo.isConnected}
-                    // onClick={() => handleConnect(repo)}
+                    onClick={() => handleConnect(repo)}
                   >
                     {localConnectingId === repo.id ? "Connecting..." : repo.isConnected ? "Connected" : "Not Connected"}
                   </Button>

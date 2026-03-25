@@ -1,8 +1,7 @@
 "use server";
 
-import { auth } from "@/lib/auth";
 import { getAppSession } from "@/lib/sessions";
-import { getRepositories } from "../lib/github";
+import { createWebhook, getRepositories } from "../lib/github";
 import prisma from "@/lib/db";
 
 export const getAllRepositories = async (page: number = 1, perPage: number = 10) => {
@@ -24,34 +23,28 @@ export const getAllRepositories = async (page: number = 1, perPage: number = 10)
   }));
 };
 
-// export const connectRepository = async (owner: string, repo: string, githubId: string) => {
-//   const session = await auth.api.getSession({
-//     headers: await headers(),
-//   });
+export const connectRepository = async (owner: string, repo: string, githubId: number) => {
+  const session = await getAppSession();
 
-//   if (!session) {
-//     throw new Error("Unauthorised");
-//   }
+  //* TODO: CHECK IF USER CAN CONNECT MORE REPO
+  const webhook = await createWebhook(owner, repo);
 
-//   //* TODO: CHECK IF USER CAN CONNECT MORE REPO
-//   const webhook = await createWebhook(owner, repo);
+  if (webhook) {
+    await prisma.repository.create({
+      data: {
+        githubId: BigInt(githubId),
+        name: repo,
+        owner,
+        fullName: `${owner}/${repo}`,
+        url: `https://github.com/${owner}/${repo}`,
+        userId: session.user.id,
+      },
+    });
+  }
 
-//   if (webhook) {
-//     await prisma.repository.create({
-//       data: {
-//         githubId: BigInt(githubId),
-//         name: repo,
-//         owner,
-//         fullName: `${owner}/${repo}`,
-//         url: `https://github.com/${owner}/${repo}`,
-//         userId: session.user.id,
-//       },
-//     });
-//   }
+  //* INCREMENT REPOSITORY COUND FOR USAGE TRACKING
 
-//   //* INCREMENT REPOSITORY COUND FOR USAGE TRACKING
+  //* TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGET)
 
-//   //* TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGET)
-
-//   return webhook;
-// };
+  return webhook;
+};
