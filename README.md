@@ -42,3 +42,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 5. Fetch PR
    - All PRS in last 6 months
    - Counts how many PRs has been raised each months
+
+Incorporated Webhooks to connect the repositories with the dashboard

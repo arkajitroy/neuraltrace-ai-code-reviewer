@@ -1,5 +1,8 @@
 "use client";
 
+import ProfileSettingForm from "@/_module/settings/components/profile-setting-form";
+import RepositoryList from "@/_module/settings/components/repositories-list";
+
 export default function SettingPageContent() {
   return (
     <div className="space-y-6">
@@ -14,6 +17,8 @@ export default function SettingPageContent() {
           </p>
         </div>
       </div>
+      <ProfileSettingForm />
+      <RepositoryList />
     </div>
   );
 }
