@@ -1,13 +1,10 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getAppSession } from "@/lib/sessions";
 import { redirect } from "next/navigation";
 
 export const requireAuthentication = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getAppSession();
   if (!session) redirect("/sign-in");
   return session;
 };

@@ -10,6 +10,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") || // allow auth endpoints
+    pathname.startsWith("/api/inggest") ||
     pathname.includes(".")
   ) {
     return NextResponse.next();
