@@ -40,6 +40,7 @@ model Repository {
   url String
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviews Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,4 +95,20 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Review {
+  id String @id @default(cuid())
+  repositoryId String
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  pullRequestNumber Int
+  pullRequestTitle String
+  pullRequestUrl String
+  status String @default("completed") // pending, completed, failed
+  review String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([repositoryId])
+  @@map("review")
 }
