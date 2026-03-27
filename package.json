@@ -15,11 +15,14 @@
     "db:generate": "prisma generate"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.53",
     "@better-auth/prisma-adapter": "^1.5.5",
     "@hookform/resolvers": "^5.2.2",
+    "@pinecone-database/pinecone": "^7.1.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@tanstack/react-query": "^5.91.3",
+    "ai": "^6.0.140",
     "auth": "^1.5.5",
     "better-auth": "^1.5.5",
     "class-variance-authority": "^0.7.1",
