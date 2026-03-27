@@ -3,6 +3,7 @@
 import { getAppSession } from "@/lib/sessions";
 import { createWebhook, getRepositories } from "../lib/github";
 import prisma from "@/lib/db";
+import { inngest } from "@/integrations/inngest/client";
 
 export const getAllRepositories = async (page: number = 1, perPage: number = 10) => {
   const session = await getAppSession();
@@ -15,28 +16,28 @@ export const getAllRepositories = async (page: number = 1, perPage: number = 10)
     },
   });
 
-  const connectedRepositoriesIds = new Set(dbRepositories.map((repo) => repo.githubId));
+  const connectedRepositoriesIds = new Set(dbRepositories.map((repository) => repository.githubId));
 
-  return githubRepos.map((repo) => ({
-    ...repo,
-    isConnected: connectedRepositoriesIds.has(BigInt(repo.id)),
+  return githubRepos.map((repository) => ({
+    ...repository,
+    isConnected: connectedRepositoriesIds.has(BigInt(repository.id)),
   }));
 };
 
-export const connectRepository = async (owner: string, repo: string, githubId: number) => {
+export const connectRepository = async (owner: string, repository: string, githubId: number) => {
   const session = await getAppSession();
 
   //* TODO: CHECK IF USER CAN CONNECT MORE REPO
-  const webhook = await createWebhook(owner, repo);
+  const webhook = await createWebhook(owner, repository);
 
   if (webhook) {
     await prisma.repository.create({
       data: {
         githubId: BigInt(githubId),
-        name: repo,
+        name: repository,
         owner,
-        fullName: `${owner}/${repo}`,
-        url: `https://github.com/${owner}/${repo}`,
+        fullName: `${owner}/${repository}`,
+        url: `https://github.com/${owner}/${repository}`,
         userId: session.user.id,
       },
     });
@@ -44,7 +45,19 @@ export const connectRepository = async (owner: string, repo: string, githubId: n
 
   //* INCREMENT REPOSITORY COUND FOR USAGE TRACKING
 
-  //* TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGET)
+  // TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGET)
+  try {
+    await inngest.send({
+      name: "repository.connected",
+      data: {
+        owner,
+        repository,
+        userId: session.user.id,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to trigger repository indexing: ", error);
+  }
 
   return webhook;
 };

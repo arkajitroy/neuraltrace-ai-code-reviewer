@@ -22,3 +22,5 @@ export interface ContributionData {
 }
 
 export type ContributionResponse = ContributionData;
+
+export type GitHubFile = { path: string; content: string };

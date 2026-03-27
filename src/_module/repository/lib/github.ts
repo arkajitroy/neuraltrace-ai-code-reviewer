@@ -1,6 +1,6 @@
 import prisma from "@/lib/db";
 import { Octokit } from "octokit";
-import { ContributionCalendar, ContributionResponse } from "../types";
+import { ContributionCalendar, ContributionResponse, GitHubFile } from "../types";
 import { getAppSession } from "@/lib/sessions";
 
 export async function getGithubToken() {
@@ -125,4 +125,64 @@ export const deleteWebhook = async (owner: string, repo: string) => {
     console.log("Error deleting webhook", error);
     return false;
   }
+};
+
+export const getRepositoryFileContents = async (
+  authToken: string,
+  owner: string,
+  repository: string,
+  pathURL: string = "",
+): Promise<Array<GitHubFile>> => {
+  const octokit = new Octokit({ auth: authToken });
+
+  const { data } = await octokit.rest.repos.getContent({
+    owner,
+    repo: repository,
+    path: pathURL,
+  });
+
+  if (!Array.isArray(data)) {
+    // filetype data
+    if (data.type === "file" && data.content) {
+      return [
+        {
+          path: data.path,
+          content: Buffer.from(data.content, "base64").toString("utf-8"),
+        },
+      ];
+    }
+    return [];
+  }
+
+  let files: Array<GitHubFile> = [];
+
+  for (const item of data) {
+    // edgecase: file type
+    if (item.type === "file") {
+      const { data: fileData } = await octokit.rest.repos.getContent({
+        owner,
+        repo: repository,
+        path: item.path,
+      });
+
+      if (!Array.isArray(fileData) && fileData.type === "file" && fileData.content) {
+        // Filter out non-code files if needed (images, etc.)
+        // For now, let's include everything that looks like text
+        if (!item.path.match(/\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz)$/i)) {
+          files.push({
+            path: item.path,
+            content: Buffer.from(fileData.content, "base64").toString("utf-8"),
+          });
+        }
+      }
+    }
+
+    // edgecase: directory type
+    else if (item.type === "dir") {
+      const subFiles = await getRepositoryFileContents(authToken, owner, repository, item.path);
+      files = files.concat(subFiles);
+    }
+  }
+
+  return files;
 };

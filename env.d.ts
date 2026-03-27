@@ -8,6 +8,7 @@ declare namespace NodeJS {
     GITHUB_CLIENT_SECRET: string;
     DATABASE_URL: string;
     INNGEST_SIGNING_KEY: string;
+    PINECONE_INDEX_NAME: string;
     PINECONE_DB_API_KEY: string;
     GEMINI_API_KEY: string;
   }
