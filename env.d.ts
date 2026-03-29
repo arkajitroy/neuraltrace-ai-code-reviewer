@@ -11,5 +11,6 @@ declare namespace NodeJS {
     PINECONE_INDEX_NAME: string;
     PINECONE_DB_API_KEY: string;
     GEMINI_API_KEY: string;
+    OPEN_ROUTER_API_KEY: string;
   }
 }
