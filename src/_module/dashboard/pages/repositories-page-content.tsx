@@ -101,10 +101,10 @@ export default function RepositoriesPageContent() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">Repositories</h1>
-          <p className="text-muted-foreground text-lg">Manage and integrate your GitHub repositories</p>
-        </div>
+        <PageHeader
+          title="Repositories"
+          description="View, manage, and seamlessly integrate your GitHub repositories with NeuralTrace."
+        />
         <RepositoriesListSkeleton />
       </div>
     );

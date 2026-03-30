@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { signIn } from "@/lib/auth-client";
-import { Github, Lock, ShieldCheck } from "lucide-react";
+import { Lock, ShieldCheck } from "lucide-react";
+import { IconGithub } from "@/assets/brand-icons/icon-github";
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,7 @@ export default function LoginForm() {
         {isLoading ? (
           <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin relative z-10" />
         ) : (
-          <Github className="w-5 h-5 relative z-10" />
+          <IconGithub className="w-5 h-5 relative z-10" />
         )}
         <span className="relative z-10 text-[15px]">
           {isLoading ? "Connecting to GitHub..." : "Continue with GitHub"}
