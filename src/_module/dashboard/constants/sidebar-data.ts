@@ -1,9 +1,6 @@
 import {
   BrainCircuit,
   Settings,
-  UserCog,
-  Bell,
-  Palette,
   LayoutDashboard,
   GitPullRequest,
   Bot,
