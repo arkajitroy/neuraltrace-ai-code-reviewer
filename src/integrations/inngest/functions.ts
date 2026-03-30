@@ -7,8 +7,7 @@ import {
 } from "@/_module/repository/lib/github";
 import { indexCodebase, retrieveContext } from "@/_module/ai/lib/rag";
 import { getReviewPrompt } from "@/_module/ai/prompts/reviews";
-import { generateText } from "ai";
-import { google } from "@ai-sdk/google";
+import { generateAIReview } from "../ai";
 
 export const inngestPing = inngest.createFunction(
   { id: "inngest-server-ping", triggers: [{ event: "test/hello.world" }] },
@@ -95,13 +94,8 @@ export const reviewPullRequest = inngest.createFunction(
 
     const review = await step.run("generate-ai-review", async () => {
       const query = getReviewPrompt(title, description, pullRequestDiff, context);
-
-      const { text } = await generateText({
-        model: google("gemini-2.0-flash"),
-        prompt: query,
-      });
-
-      return text;
+      const review = await generateAIReview(query);
+      return review;
     });
 
     await step.run("post-review-comment", async () => {

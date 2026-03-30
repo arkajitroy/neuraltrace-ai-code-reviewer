@@ -9,7 +9,8 @@ export async function generateEmbedding(text: string) {
     value: text,
   });
 
-  return embedding;
+  // MRL allows truncation to 768 dimensions natively
+  return embedding.slice(0, 768);
 }
 
 export async function indexCodebase(repositoryId: string, files: Array<GitHubFile>) {
@@ -23,7 +24,7 @@ export async function indexCodebase(repositoryId: string, files: Array<GitHubFil
     // Process and truncate contents safely
     const validFiles = fileBatch.map((f) => ({
       ...f,
-      content: `File: ${f.path}\n\n${f.content}`.slice(0, 8000),
+      content: `File: ${f.path}\n\n${f.content}`.slice(0, 6000), // ~1500 tokens, well below 2048 token limit
     }));
     const texts = validFiles.map((f) => f.content);
 
@@ -39,7 +40,7 @@ export async function indexCodebase(repositoryId: string, files: Array<GitHubFil
       for (let j = 0; j < validFiles.length; j++) {
         vectors.push({
           id: `${repositoryId}-${validFiles[j].path.replace(/\//g, "_")}`,
-          values: embeddings[j],
+          values: embeddings[j].slice(0, 768), // MRL truncate to 768 dimension pinecone index size
           metadata: {
             repositoryId,
             path: validFiles[j].path,
