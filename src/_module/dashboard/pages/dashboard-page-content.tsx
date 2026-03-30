@@ -21,21 +21,13 @@ import {
   ExternalLink,
   Code2,
 } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import ContributionGraph from "../components/visualizations/contribution-graph";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import ContributionStreak from "../components/visualizations/contribution-streak";
 import { UrlObject } from "url";
+import PageHeader from "@/components/custom/page-header";
 
 export default function DashboardPageContent() {
   const { data: statistics, isLoading: isLoadingStatistics } = useQuery({
@@ -61,16 +53,7 @@ export default function DashboardPageContent() {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-xl">
-            Overview of your coding activity and AI reviews
-          </p>
-        </div>
-      </div>
+      <PageHeader title="Dashboard" description="Overview of your coding activity and AI reviews" />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Card>
@@ -80,11 +63,7 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalRepos || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalRepos || 0}
             </div>
             <p className="text-muted-foreground text-xs">Connected Repos</p>
           </CardContent>
@@ -97,11 +76,7 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalCommits || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalCommits || 0}
             </div>
             <p className="text-muted-foreground text-xs">In the last year</p>
           </CardContent>
@@ -114,11 +89,7 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalPRs || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalPRs || 0}
             </div>
             <p className="text-muted-foreground text-xs">All time</p>
           </CardContent>
@@ -131,11 +102,7 @@ export default function DashboardPageContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {isLoadingStatistics ? (
-                <Loader2 className="h-8 w-8 animate-spin" />
-              ) : (
-                statistics?.totalReviews || 0
-              )}
+              {isLoadingStatistics ? <Loader2 className="h-8 w-8 animate-spin" /> : statistics?.totalReviews || 0}
             </div>
             <p className="text-muted-foreground text-xs">Generated reviews</p>
           </CardContent>
@@ -191,9 +158,7 @@ export default function DashboardPageContent() {
 
                     {/* Description */}
                     {repo.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
-                        {repo.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{repo.description}</p>
                     )}
 
                     {/* Bottom Row */}
@@ -235,9 +200,7 @@ export default function DashboardPageContent() {
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Activity Overview</CardTitle>
-            <CardDescription>
-              Monthly breakdown of commits, PRs, and reviews (last 6 months)
-            </CardDescription>
+            <CardDescription>Monthly breakdown of commits, PRs, and reviews (last 6 months)</CardDescription>
           </CardHeader>
 
           <CardContent>

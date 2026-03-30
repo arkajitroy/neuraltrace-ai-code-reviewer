@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { RepositoriesListSkeleton } from "./skeleton/repositories-skeleton";
 import { useConnectRepository } from "@/_module/repository/hooks/use-connect-repository";
 import { cn } from "@/lib/utils";
+import PageHeader from "@/components/custom/page-header";
 
 const languageColors: Record<string, string> = {
   TypeScript: "bg-blue-500",
@@ -40,8 +41,7 @@ const languageColors: Record<string, string> = {
 };
 
 export default function RepositoriesPageContent() {
-  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useRepositories();
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useRepositories();
   const { mutate: connectRepoFn } = useConnectRepository();
 
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -103,9 +103,7 @@ export default function RepositoriesPageContent() {
       <div className="space-y-6">
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">Repositories</h1>
-          <p className="text-muted-foreground text-lg">
-            Manage and integrate your GitHub repositories
-          </p>
+          <p className="text-muted-foreground text-lg">Manage and integrate your GitHub repositories</p>
         </div>
         <RepositoriesListSkeleton />
       </div>
@@ -124,16 +122,10 @@ export default function RepositoriesPageContent() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header Section */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Repositories
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-xl">
-            View, manage, and seamlessly integrate your GitHub repositories with NeuralTrace.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Repositories"
+        description="View, manage, and seamlessly integrate your GitHub repositories with NeuralTrace."
+      />
 
       {/* Filters & Search */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-card p-4 rounded-xl">
@@ -146,31 +138,37 @@ export default function RepositoriesPageContent() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-          <Button
-            variant={filterConnect === "all" ? "default" : "outline"}
-            size="sm"
+        <div className="inline-flex items-center rounded-lg bg-muted/50 p-1 shadow-sm border border-border/40">
+          <button
             onClick={() => setFilterConnect("all")}
-            className="rounded-full rounded-r-none"
+            className={`px-4 py-1.5 text-sm font-medium transition-all duration-200 rounded-md ${
+              filterConnect === "all"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
             All Repos
-          </Button>
-          <Button
-            variant={filterConnect === "connected" ? "default" : "outline"}
-            size="sm"
+          </button>
+          <button
             onClick={() => setFilterConnect("connected")}
-            className="rounded-none border-l-0"
+            className={`px-4 py-1.5 text-sm font-medium transition-all duration-200 rounded-md ${
+              filterConnect === "connected"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
             Connected
-          </Button>
-          <Button
-            variant={filterConnect === "not_connected" ? "default" : "outline"}
-            size="sm"
+          </button>
+          <button
             onClick={() => setFilterConnect("not_connected")}
-            className="rounded-full rounded-l-none border-l-0"
+            className={`px-4 py-1.5 text-sm font-medium transition-all duration-200 rounded-md ${
+              filterConnect === "not_connected"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
             Not Connected
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -181,7 +179,7 @@ export default function RepositoriesPageContent() {
             <Archive className="h-12 w-12 text-muted-foreground/50 mb-4" />
             <h3 className="text-xl font-semibold">No repositories found</h3>
             <p className="text-muted-foreground text-sm mt-1">
-              Try adjusting your search or filters to find what you're looking for.
+              Try adjusting your search or filters to find what you&apos;re looking for.
             </p>
           </div>
         ) : (
@@ -243,19 +241,12 @@ export default function RepositoriesPageContent() {
                   {repo.topics && repo.topics.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-4 mt-auto">
                       {repo.topics.slice(0, 3).map((topic: string) => (
-                        <Badge
-                          key={topic}
-                          variant="secondary"
-                          className="text-[10px] px-1.5 py-0 h-5 font-normal"
-                        >
+                        <Badge key={topic} variant="secondary" className="text-[10px] px-1.5 py-0 h-5 font-normal">
                           {topic}
                         </Badge>
                       ))}
                       {repo.topics.length > 3 && (
-                        <Badge
-                          variant="secondary"
-                          className="text-[10px] px-1.5 py-0 h-5 font-normal opacity-50"
-                        >
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 font-normal opacity-50">
                           +{repo.topics.length - 3}
                         </Badge>
                       )}
@@ -267,10 +258,7 @@ export default function RepositoriesPageContent() {
                     {repo.language && (
                       <div className="flex items-center gap-1.5">
                         <span
-                          className={cn(
-                            "h-2.5 w-2.5 rounded-full",
-                            languageColors[repo.language] || "bg-gray-400",
-                          )}
+                          className={cn("h-2.5 w-2.5 rounded-full", languageColors[repo.language] || "bg-gray-400")}
                         />
                         {repo.language}
                       </div>
@@ -301,8 +289,7 @@ export default function RepositoriesPageContent() {
                     size="sm"
                     className={cn(
                       "w-32 transition-all shadow-sm rounded-full",
-                      repo.isConnected &&
-                        "border-primary/50 text-primary hover:bg-primary/10 hover:text-primary",
+                      repo.isConnected && "border-primary/50 text-primary hover:bg-primary/10 hover:text-primary",
                       isConnecting && "opacity-80 cursor-wait",
                     )}
                     disabled={isConnecting || repo.isConnected}
@@ -334,7 +321,7 @@ export default function RepositoriesPageContent() {
         {!hasNextPage && allRepositories.length > 0 && (
           <div className="flex items-center gap-2 text-muted-foreground/60 text-sm bg-muted/30 px-4 py-2 rounded-full mt-4">
             <CheckCircle2 className="h-4 w-4" />
-            You've reached the end
+            You&apos;ve reached the end
           </div>
         )}
       </div>
