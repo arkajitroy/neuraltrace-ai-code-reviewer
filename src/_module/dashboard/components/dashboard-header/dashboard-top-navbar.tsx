@@ -31,7 +31,7 @@ export function DashboardTopNavbar({ className, links, ...props }: TopNavProps) 
             {links.map(({ title, href, isActive, disabled }) => (
               <DropdownMenuItem key={`${title}-${href}`} asChild>
                 <Link
-                  href={href}
+                  href={href as any}
                   className={!isActive ? "text-muted-foreground" : ""}
                   // disabled={disabled}
                 >

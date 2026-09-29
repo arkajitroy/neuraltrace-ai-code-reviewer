@@ -70,7 +70,7 @@ function SidebarMenuLink({ item, pathname }: { item: NavLink; pathname: string }
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive(pathname, item.href)} tooltip={item.title}>
-        <Link href={item.href} onClick={() => setOpenMobile(false)}>
+        <Link href={item.href as any} onClick={() => setOpenMobile(false)}>
           {item.icon && <item.icon />}
           <span>{item.title}</span>
           {item.badge && <NavBadge>{item.badge}</NavBadge>}
@@ -102,7 +102,7 @@ function SidebarMenuCollapsible({ item, pathname }: { item: NavCollapsible; path
             {item.items.map((subItem) => (
               <SidebarMenuSubItem key={subItem.title}>
                 <SidebarMenuSubButton asChild isActive={isActive(pathname, subItem.href)}>
-                  <Link href={subItem.href} onClick={() => setOpenMobile(false)}>
+                  <Link href={subItem.href as any} onClick={() => setOpenMobile(false)}>
                     {subItem.icon && <subItem.icon />}
                     <span>{subItem.title}</span>
                     {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
@@ -139,7 +139,7 @@ function SidebarMenuCollapsedDropdown({ item, pathname }: { item: NavCollapsible
 
           {item.items.map((sub) => (
             <DropdownMenuItem key={sub.title} asChild>
-              <Link href={sub.href} className={isActive(pathname, sub.href) ? "bg-secondary" : ""}>
+              <Link href={sub.href as any} className={isActive(pathname, sub.href) ? "bg-secondary" : ""}>
                 {sub.icon && <sub.icon />}
                 <span className="max-w-52">{sub.title}</span>
                 {sub.badge && <span className="ml-auto text-xs">{sub.badge}</span>}
