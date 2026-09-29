@@ -1,10 +1,15 @@
 "use server";
 
-import { getAppSession } from "@/lib/sessions";
+import { getSession } from "@/lib/sessions";
 import { redirect } from "next/navigation";
 
-export const requireAuthentication = async () => {
-  const session = await getAppSession();
-  if (!session) redirect("/sign-in");
+export const requireAuthentication = async (callbackUrl?: string) => {
+  const session = await getSession();
+  if (!session?.user) {
+    const redirectUrl = callbackUrl
+      ? `/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`
+      : "/sign-in";
+    redirect(redirectUrl as any);
+  }
   return session;
 };

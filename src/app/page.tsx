@@ -1,9 +1,7 @@
-import { requireAuthentication } from "@/_module/auth/services/auth-check";
 import { redirect } from "next/navigation";
 
-export default async function RootPage() {
-  await requireAuthentication();
-
-  // authenticated user will be automatically redirected to the dashboard
-  return redirect("/dashboard");
+export default function RootPage() {
+  // Edge proxy handles conditional routing (/dashboard vs /sign-in).
+  // Default fallback for direct hits or static export redirects to /sign-in.
+  redirect("/sign-in");
 }

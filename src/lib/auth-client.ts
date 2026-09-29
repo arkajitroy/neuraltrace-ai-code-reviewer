@@ -1,4 +1,4 @@
-import { createAuthClient } from "better-auth/client";
+import { createAuthClient } from "better-auth/react";
 
 // Singleton Auth client Instance (avoids re-rendering accross imports)
 const baseURL = process.env.BASE_URL;

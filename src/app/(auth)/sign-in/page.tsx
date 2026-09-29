@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AuthInfoCard } from "@/_module/auth/components/auth-info-card";
 import SignInForm from "@/_module/auth/components/login-form";
 
@@ -23,7 +24,9 @@ export default function SignInPage() {
               </p>
             </div>
 
-            <SignInForm />
+            <Suspense fallback={<div className="w-full h-12 rounded-xl bg-muted/20 animate-pulse" />}>
+              <SignInForm />
+            </Suspense>
 
             <p className="text-sm text-center text-muted-foreground/80 pt-6">
               By clicking continue, you agree to our{" "}

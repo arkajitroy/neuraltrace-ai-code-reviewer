@@ -4,15 +4,19 @@ import { useState } from "react";
 import { signIn } from "@/lib/auth-client";
 import { Lock, ShieldCheck } from "lucide-react";
 import { IconGithub } from "@/assets/brand-icons/icon-github";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const handleGithubLogin = async () => {
     setIsLoading(true);
     try {
       await signIn.social({
         provider: "github",
+        callbackURL: callbackUrl,
       });
     } catch (error) {
       console.error("Login error", error);
